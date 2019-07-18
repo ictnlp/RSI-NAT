@@ -13,6 +13,9 @@ Dependencies
 * NLTK
 * torchtext
 * torchvision
+* revtok
+* multiset
+* ipdb
 
 ### GPU
 * CUDA (we recommend using the latest version. The version 8.0 was used in all our experiments.)
