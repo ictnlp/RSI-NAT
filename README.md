@@ -1,8 +1,7 @@
 Retrieving Sequential Information for Non-Autoregressive Neural Machine Translation
 ==================================
 PyTorch implementation of the models described in the paper [Retrieving Sequential Information for Non-Autoregressive Neural Machine Translation
-](https://arxiv.org/abs/1906.09444 "Retrieving Sequential Information for Non-Autoregressive Neural Machine Translation
-").
+](https://arxiv.org/abs/1906.09444 "Retrieving Sequential Information for Non-Autoregressive Neural Machine Translation").
 
 Dependencies
 ------------------
