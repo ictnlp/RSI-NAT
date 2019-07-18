@@ -21,7 +21,7 @@ Dependencies
 * CUDA (we recommend using the latest version. The version 8.0 was used in all our experiments.)
 
 ### Related code
-* This code is based on [dl4mt-nonauto](https://github.com/nyu-dl/dl4mt-nonauto "dl4mt-nonauto"). We mainly modified the [`model.py`](https://github.com/ictnlp/RSI-NAT/model.py "model.py") (line 1103-1199).
+* This code is based on [dl4mt-nonauto](https://github.com/nyu-dl/dl4mt-nonauto "dl4mt-nonauto"). We mainly modified the [`model.py`](https://github.com/ictnlp/RSI-NAT/blob/master/model.py "model.py") (line 1103-1199).
 
 Downloading Datasets
 ------------------
@@ -29,7 +29,7 @@ The original translation corpora can be downloaded from ([IWLST'16 En-De](https:
 
 Before you run the code
 ------------------
-Set correct path to data in `data_path()` function located in [`data.py`](https://github.com/ictnlp/RSI-NAT/data.py):
+Set correct path to data in `data_path()` function located in [`data.py`](https://github.com/ictnlp/RSI-NAT/blob/master/data.py):
 
 Training New Models
 ------------------
