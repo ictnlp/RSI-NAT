@@ -62,7 +62,7 @@ def positional_encodings_like(x, t=None):   # hope to be differentiable
     else:
         positions = t
     # channels
-    channels = torch.arange(0, x.size(-1), 2) / x.size(-1) # 0 2 4 6 ... (256)
+    channels = torch.arange(0, x.size(-1), 2).float() / x.size(-1) # 0 2 4 6 ... (256)
     if x.is_cuda:
         channels = channels.cuda(x.get_device())
     channels = 1 / (10000 ** Variable(channels))
@@ -293,7 +293,7 @@ class MultiHead2(nn.Module):
         if mask is not None:
             mask = mask[:, None, :].expand(B, N, Tk).contiguous().view(B*N, -1)
         outputs = self.attention(query, key, value, mask, probs, beta, tau, weights)  # (B x N) x T x (D/N)
-        outputs = outputs.contiguous().view(B, N, -1, D//N).transpose(2, 1).contiguous().view(B, -1, D)
+        outputs = outputs.view(B, N, -1, D//N).transpose(2, 1).contiguous().view(B, -1, D)
 
         if feedback is not None:
             feedback.append(probs[0].view(B, N, Tq, Tk))
@@ -666,6 +666,7 @@ class Transformer(nn.Module):
 
         self.n_layers = args.n_layers
         self.d_model = args.d_model
+        self.gpu = args.gpu
 
     def denum(self, data, target=True):
         field = self.decoder.field if target else self.encoder.field
@@ -879,9 +880,12 @@ class Transformer(nn.Module):
 
     def quick_prepare(self, batch, fast=True, trg_len_option=None, trg_len_ratio=2.0, trg_len_dic=None, decoder_inputs=None, targets=None, decoder_masks=None, target_masks=None, source_masks=None, bp=1.00):
         sources,        source_masks    = self.prepare_sources(batch, source_masks)
+        sources = sources.cuda(self.gpu)
+        source_masks = source_masks.cuda(self.gpu)
         encoding                        = self.encoding(sources, source_masks)
         targets,        target_masks    = self.prepare_targets(batch, targets, decoder_masks)  # prepare decoder-targets
-
+        targets = targets.cuda(self.gpu)
+        target_masks = target_masks.cuda(self.gpu)
         # predicted decoder masks
         if trg_len_option == "predict":
             target_offset = Variable((target_masks.sum(-1) - source_masks.sum(-1)).clamp_(-self.max_offset, self.max_offset), requires_grad=False) # batch_size tensor
@@ -900,7 +904,7 @@ class Transformer(nn.Module):
         if fast:
             # compute decoder_masks
             if trg_len_option == "reference":
-                _, decoder_masks   = self.prepare_decoder_inputs(batch.trg, decoder_inputs, decoder_masks, bp=bp)
+                _, decoder_masks   = self.prepare_decoder_inputs(batch.trg.cuda(self.gpu), decoder_inputs, decoder_masks, bp=bp)
 
             elif trg_len_option == "noisy_ref":
                 bp = np.random.uniform(bp, 1.0)
@@ -1036,6 +1040,7 @@ class FastTransformer(Transformer):
         self.n_layers = args.n_layers
         self.d_model = args.d_model
         self.softmax = nn.Softmax(dim = -1)
+        self.gpu=args.gpu
 
     def output_decoding(self, outputs, unbpe = True):
         field, text = outputs
@@ -1150,7 +1155,7 @@ class FastTransformer(Transformer):
         loss_traverse = -1 * torch.sum(top_probs * gleus)
 
         gleu = self.compute_stepwise_gleu(args.stepwise_sampletimes, args.workers, sample_index, probs, targets, target_lens)
-        loss_sample = torch.sum((-1 * (1-weight) * torch.log(sample_prob).view(-1) * (gleu)),dim = 0)
+        loss_sample = torch.sum((-1 * (1-weight) * torch.log(sample_prob).view(-1) * (gleu - ave_gleu)),dim = 0)
 
         loss = (loss_sample + loss_traverse).div(len(targets))
         return loss
@@ -1238,7 +1243,7 @@ def linear_attention(source_masks, decoder_masks, decoder_input_how):
         trg_lens = decoder_masks.sum(-1).float()-1  # batch_size
         steps = src_lens / trg_lens          # batch_size
 
-        index_s = torch.arange(max_trg_len)  # max_trg_len
+        index_s = torch.arange(max_trg_len).float()  # max_trg_len
         if decoder_masks.is_cuda:
             index_s = index_s.cuda(decoder_masks.get_device())
 

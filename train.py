@@ -231,7 +231,7 @@ def train_model(args, model, train, dev, src=None, trg=None, trg_len_dic=None, t
                 torch.save(best.model.state_dict(), '{}_iter={}.pt'.format(str(args.model_path / args.id_str), iters))
                 torch.save([iters, best.opt.state_dict()], '{}_iter={}.pt.states'.format(str(args.model_path / args.id_str), iters))
 
-        if (iters) % args.eval_every == 0:
+        if (iters+1) % args.eval_every == 0:
             torch.cuda.empty_cache()
             gc.collect()
             dev_metrics.reset()
@@ -304,8 +304,8 @@ def train_model(args, model, train, dev, src=None, trg=None, trg_len_dic=None, t
             opt.param_groups[0]['lr'] = get_lr_anneal(iters + 1)
         elif args.lr_schedule == "transformer":
             opt.param_groups[0]['lr'] = get_lr_transformer(iters + 1)
-        if iters % 1 == 0:
-            opt.zero_grad()
+        #if iters % 2 == 0:
+        #    opt.zero_grad()
 
         if args.dataset == "mscoco":
             decoder_inputs, decoder_masks,\
@@ -416,8 +416,8 @@ def train_model(args, model, train, dev, src=None, trg=None, trg_len_dic=None, t
 
         if args.grad_clip > 0:
             total_norm = nn.utils.clip_grad_norm(params, args.grad_clip)
-        #if iters % 2 == 1:
-        opt.step()
+#        if iters % 2 == 1:
+ #           opt.step()
 
         mid_str = ''
         if type(model) is FastTransformer and args.self_distil > 0.0:
