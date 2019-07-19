@@ -33,6 +33,7 @@ Set correct path to data in `data_path()` function located in [`data.py`](https:
 Training New Models
 ------------------
 Train a NAT model using the cross-entropy loss. This process usually takes about 10 days.
+You can download our pretrained models [here](https://share.weiyun.com/5lnIanI "here")
 #### IWSLT
 ```bash
 $ sh train_iwslt.sh
