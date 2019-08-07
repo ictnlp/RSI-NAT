@@ -1155,7 +1155,7 @@ class FastTransformer(Transformer):
         loss_traverse = -1 * torch.sum(top_probs * gleus)
 
         gleu = self.compute_stepwise_gleu(args.stepwise_sampletimes, args.workers, sample_index, probs, targets, target_lens)
-        loss_sample = torch.sum((-1 * (1-weight) * torch.log(sample_prob).view(-1) * (gleu - ave_gleu)),dim = 0)
+        loss_sample = torch.sum((-1 * (1-weight) * torch.log(sample_prob).view(-1) * gleu),dim = 0)
 
         loss = (loss_sample + loss_traverse).div(len(targets))
         return loss
