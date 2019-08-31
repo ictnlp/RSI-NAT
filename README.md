@@ -84,10 +84,18 @@ Citation
 ------------------
 If you find the resources in this repository useful, please consider citing:
 ```
-@article{Shao:19,
-  author    = {Chenze Shao, Yang Feng, Jinchao Zhang, Fandong Meng, Xilin Chen, Jie Zhou},
-  title     = {Retrieving Sequential Information for Non-Autoregressive Neural Machine Translation},
-  year      = {2019},
-  journal   = {arXiv preprint arXiv:1906.09444},
+@inproceedings{shao2019retrieving,
+    title = "Retrieving Sequential Information for Non-Autoregressive Neural Machine Translation",
+    author = "Shao, Chenze  and
+      Feng, Yang  and
+      Zhang, Jinchao  and
+      Meng, Fandong  and
+      Chen, Xilin  and
+      Zhou, Jie",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    url = "https://www.aclweb.org/anthology/P19-1288",
+    pages = "3013--3024",
 }
 ```
