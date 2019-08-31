@@ -1205,14 +1205,6 @@ class FastTransformer(Transformer):
 
 
 
-def mask(targets, out, input_mask=None, return_mask=False):
-    if input_mask is None:
-        input_mask = (targets != 1)
-    out_mask = input_mask.unsqueeze(-1).expand_as(out)
-
-    if return_mask:
-        return targets[input_mask], out[out_mask].view(-1, out.size(-1)), the_mask
-    return targets[input_mask], out[out_mask].view(-1, out.size(-1))
 
 def prepare_cost(targets, out, target_mask=None, return_mask=None):
     # targets : batch_size, seq_len
